@@ -9,7 +9,7 @@ const SALT_WORK_FACTOR = 10;
 // create a schema
 const userSchema = new Schema({
   name: String,
-  email: { type: String, unique: true },
+  email: String,
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   admin: { type: Boolean, default: false },
@@ -22,6 +22,7 @@ userSchema.pre('save', function (next) {
   bcrypt.hash(this.password, SALT_WORK_FACTOR, (err, hash) => {
     if (err) throw err;
     this.password = hash;
+    console.log('hashed password: ', hash);
     next();
   });
 });

@@ -32,7 +32,7 @@ gulp.task('deploy', () => {
 });
 
 gulp.task('watch', () => {
-  gulp.watch(['./app/*.js', './app/*.jsx'], ['scripts']);
+  gulp.watch(['./app/landing/*.js', './app/landing/*.jsx'], ['scripts']);
 });
 
 // When running 'gulp' on the terminal this task will fire.
@@ -47,7 +47,7 @@ function bundleApp(isProduction) {
   // Browserify will bundle all our js files together in to one and will let
   // us use modules in the front end.
   const appBundler = browserify({
-    entries: './app/main.js',
+    entries: './app/landing/main.js',
     debug: true,
   });
 
@@ -73,7 +73,6 @@ function bundleApp(isProduction) {
       appBundler.external(dep);
     });
   }
-
   appBundler
     // transform ES6 and JSX to ES5 with babelify
     .transform('babelify', { presets: ['es2015', 'react'] })

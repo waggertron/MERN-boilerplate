@@ -4,7 +4,7 @@ import React from 'react';
 const LoginForm = (props) => {
   return (
     <div>
-      <form>
+      <form action="#">
         <label htmlFor="identifier">
           Username/email:
           <br />
@@ -17,7 +17,7 @@ const LoginForm = (props) => {
           <input name="password" type="password" onChange={props.handleType} />
         </label>
         <br />
-        <button className="submitBtn" onClick={props.handleSubmit}>Submit</button>
+        <button type="button" className="submitBtn" onClick={props.handleSubmit}>Submit</button>
       </form>
     </div>
   );

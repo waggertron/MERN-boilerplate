@@ -3,7 +3,7 @@ import LoginForm from './LoginForm.jsx';
 import SignupForm from './SignupForm.jsx';
 
 
-$.postJSON = (url, data) => {
+const postJSON = (url, data) => {
   return $.ajax({
     url,
     type: 'POST',
@@ -34,14 +34,30 @@ class App extends Component {
 
   }
   handleSubmit() {
-
+    const data = {};
+    if (this.state.mode === 'Login') {
+      data.identifier = this.state.identifier;
+      data.password = this.state.password;
+    } else {
+      data.username = this.state.username;
+      data.password = this.state.password;
+      if (this.state.email) data.email = this.state.email;
+    }
+    console.log(data);
+    postJSON(`/${this.state.mode}`, data).then((res) => {
+      this.handleSubmitResponse(res);
+    });
   }
-  handleSubmitResponse() {
-
+  handleSubmitResponse(res) {
+    console.log(res);
   }
   handleType(e) {
     const el = e.target;
+    console.log(el.name);
+    console.log(el.value);
+    console.log(this.state);
     this.setState({ [el.name]: el.value });
+    setTimeout(() => console.log(this.state, 0));
   }
 
   switchMode() {
