@@ -9,11 +9,12 @@ const dbConfig = require('./dbConfig.js');
 // const IP = process.env.ip;
 const PORT = process.env.PORT || serverConfig.port || 3000;
 const DB_NAME = process.env.DB_NAME || dbConfig.dbName || 'myappdatabase';
-const DBURI = process.env.DBURI ||  || `mongodb://localhost/${DB_NAME}`;
+const DBURI = process.env.DBURI || dbConfig.dbUri || `mongodb://localhost/${DB_NAME}`;
 
 function startServer(app) {
   app.use(express.static(path.join(__dirname, './../web/')));
   app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
   app.use('/', router);
   app.listen(PORT, () => process.stdout.write(`Server listening on port ${PORT}\n`));
 }
