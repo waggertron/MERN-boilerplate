@@ -22,7 +22,6 @@ userSchema.pre('save', function (next) {
   bcrypt.hash(this.password, SALT_WORK_FACTOR, (err, hash) => {
     if (err) throw err;
     this.password = hash;
-    console.log('hashed password: ', hash);
     next();
   });
 });

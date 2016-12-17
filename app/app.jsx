@@ -49,7 +49,7 @@ class App extends Component {
     });
   }
   handleSubmitResponse(res) {
-    console.log(res);
+
   }
   handleType(e) {
     const el = e.target;

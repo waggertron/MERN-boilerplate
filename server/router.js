@@ -1,16 +1,11 @@
 
 const data = require('./data.js');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const expressRouter = require('express').Router;
 const userController = require('./controllers/userController.js');
 
 
 const router = expressRouter();
-
-function logger(req, res, next) {
-  console.log('req recieved');
-}
-
 
 // router.use(morgan('combined'));
 
