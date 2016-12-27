@@ -1,62 +1,32 @@
 const express = require('express');
-const path = require('path');
 const mongoose = require('mongoose');
-const router = require('./router');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const expressSession = require('express-session');
+const config = require('./configs/configController');
 const { port, enviorment } = require('./configs/serverConfig.js');
 const { dbName, dbUri } = require('./configs/dbConfig.js');
-const { secret } = require('./configs/securityConfig.js');
-const Account = require('./models/AccountModel.js');
-
+const socketEvents = require('./socketEvents');
+const https = require('https');
+const fs = require('fs');
+const socketIO = require('socketio');
 // const IP = process.env.ip;
 const PORT = process.env.PORT || port || 3000;
 const DB_NAME = process.env.DB_NAME || dbName || 'myappdatabase';
 const DBURI = process.env.DBURI || dbUri || `mongodb://localhost/${DB_NAME}`;
 const ENVIORMENT = enviorment || 'development';
+// self signed cert
+const httpsCertOptions = {
+  key: fs.readFileSync('./certs/file.pem'),
+  cert: fs.readFileSync('./certs/file.crt'),
+};
 
 
 
 function startServer(app) {
   app.set('env', ENVIORMENT);
-  app.use(express.static(path.join(__dirname, './../web/')));
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(cookieParser());
-  app.use(expressSession({
-    secret,
-    resave: false,
-    saveUninitialized: false,
-  }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  passport.use(new LocalStrategy(Account.authenticate()));
-  passport.serializeUser(Account.serializeUser());
-  passport.deserializeUser(Account.deserializeUser());
-  if (app.get('env') === 'development') {
-    app.use((err, req, res, next) => {
-      res.status(err.status || 500);
-      res.send('error: ', {
-        message: err.message,
-        error: err,
-      });
-    });
-  }
-
-  // production error handler
-  // no stacktraces leaked to user
-  app.use((err, req, res, next) => {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: {},
-    });
-  });
-  app.use('/', router);
-  app.listen(PORT, () => process.stdout.write(`Server listening on port ${PORT}\n`));
+  const server = https.createServer(httpsCertOptions, app);
+  const io = socketIO(server);
+  socketEvents(io);
+  config(app);
+  server.listen(PORT, () => process.stdout.write(`Server listening on port ${PORT}\n`));
 }
 
 function handleExit() {
@@ -73,7 +43,7 @@ mongoose.connection.on('connected', () => {
 });
 // On connection error
 mongoose.connection.on('error', (err) => {
-  console.error(`Failed to connect to DB ${DB_NAME} on startup\n`, err);
+  process.stderr.write(`\nFailed to connect to DB ${DB_NAME} on startup\n`, err);
 });
 
 // On disconnection

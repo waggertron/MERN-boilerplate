@@ -38,3 +38,6 @@ jspm_packages
 
 #private configs
 server/configs
+server/configs/dbConfig.js
+server/configs/securityConfig.js
+server/certs/*

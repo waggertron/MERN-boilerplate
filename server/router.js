@@ -1,23 +1,11 @@
-
-const data = require('./data.js');
 // const morgan = require('morgan');
 const expressRouter = require('express').Router;
 const passport = require('passport');
 const Account = require('./models/AccountModel.js');
 
-
 const router = expressRouter();
 
 // router.use(morgan('combined'));
-
-router.get('/data', (req, res) => {
-  res.json(data);
-});
-router.get('/', (req, res) => {
-  // res.render('index', { user: req.user });
-  res.json({ user: req.user });
-});
-
 
 router.post('/signup', (req, res, next) => {
   Account.register(
@@ -51,6 +39,8 @@ router.get('/logout', (req, res) => {
 router.get('/ping', (req, res) => {
   res.status(200).send('pong!');
 });
+
+
 
 
 

@@ -1,11 +1,5 @@
-/*
-*	Task Automation to make my life easier.
-*	Author: Jean-Pierre Sierens
-*	===========================================================================
-*/
 
-// declarations, dependencies
-// ----------------------------------------------------------------------------
+// dependencies
 const gulp = require('gulp');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
@@ -13,14 +7,14 @@ const gutil = require('gulp-util');
 const babelify = require('babelify');
 
 // External dependencies you do not want to rebundle while developing,
-// but include in your application deployment
+// but to include in deployment
 const dependencies = [
   'react',
   'react-dom',
   'redux',
   'react-redux',
 ];
-// keep a count of the times a task refires
+// count of task refires
 let scriptsCount = 0;
 
 // Gulp tasks

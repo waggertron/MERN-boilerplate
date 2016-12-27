@@ -8,10 +8,6 @@ const AccountSchema = new Schema({
   password: String,
 });
 
-
 AccountSchema.plugin(passportLocalMongoose);
-
-
-
 
 module.exports = mongoose.model('Account', AccountSchema);

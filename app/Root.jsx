@@ -7,6 +7,8 @@ import Signup from './SignupForm.jsx';
 
 const history = require('../node_modules/react-router/lib/hashHistory.js').history;
 
+
+// convert to main app view
 module.exports = (
   <Router history={history}>
     <Route component={App}>
