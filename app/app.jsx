@@ -19,8 +19,6 @@ class App extends Component {
     super(props);
     this.state = {
       mode: 'Login',
-      identifier: '',
-      username: '',
       email: '',
       password: '',
       error: '',
@@ -36,50 +34,39 @@ class App extends Component {
   handleSubmit() {
     const data = {};
     if (this.state.mode === 'Login') {
-      data.identifier = this.state.identifier;
+      data.emal = this.state.email;
       data.password = this.state.password;
-    } else {
-      data.username = this.state.username;
-      data.password = this.state.password;
-      if (this.state.email) data.email = this.state.email;
+      postJSON(`/${this.state.mode}`, data).then((res) => {
+        this.handleSubmitResponse(res);
+      });
     }
-    console.log(data);
-    postJSON(`/${this.state.mode}`, data).then((res) => {
-      this.handleSubmitResponse(res);
-    });
+    handleSubmitResponse(res) {
+      console.log(res);
+    }
+    handleType(e) {
+      const el = e.target;
+      this.setState({ [el.name]: el.value });
+    }
+    switchMode() {
+      const newMode = this.state.mode === 'Login' ? 'Signup' : 'Login';
+      this.setState({ mode: newMode, identifier: '', email: '', password: '', error: '' });
+    }
+    render() {
+      const form = this.state.mode === 'Signup' ? <SignupForm handleSubmit={this.handleSubmit} handleType={this.handleType} /> : <LoginForm handleSubmit={this.handleSubmit} handleType={this.handleType} />;
+      const error = this.state.error ? <p id="errorMsg">{this.state.error}</p> : null;
+      return (
+        <div id="loginBox">
+          <button className="altAuthBtn" onClick={this.switchMode}>
+            {this.state.mode == 'Login' ? 'Need an account?' : 'Already have an account?'}
+          </button>
+          <h1 id="formTitle">{this.state.mode}</h1>
+          {form}
+          {error}
+        </div>
+      );
+    }
   }
-  handleSubmitResponse(res) {
-
-  }
-  handleType(e) {
-    const el = e.target;
-    console.log(el.name);
-    console.log(el.value);
-    console.log(this.state);
-    this.setState({ [el.name]: el.value });
-    setTimeout(() => console.log(this.state, 0));
-  }
-
-  switchMode() {
-    const newMode = this.state.mode === 'Login' ? 'Signup' : 'Login';
-    this.setState({ mode: newMode, identifier: '', username: '', email: '', password: '', error: '' });
-  }
-  render() {
-    const form = this.state.mode === 'Signup' ? <SignupForm handleSubmit={this.handleSubmit} handleType={this.handleType} /> : <LoginForm handleSubmit={this.handleSubmit} handleType={this.handleType} />;
-    const error = this.state.error ? <p id="errorMsg">{this.state.error}</p> : null;
-    return (
-      <div id="loginBox">
-        <button className="altAuthBtn" onClick={this.switchMode}>
-          {this.state.mode == 'Login' ? 'Need an account?' : 'Already have an account?'}
-        </button>
-        <h1 id="formTitle">{this.state.mode}</h1>
-        {form}
-        {error}
-      </div>
-    );
-  }
-}
 
 
 
-export default App;
+  export default App;

@@ -3,18 +3,58 @@ const path = require('path');
 const mongoose = require('mongoose');
 const router = require('./router');
 const bodyParser = require('body-parser');
-const serverConfig = require('./serverConfig.js');
-const dbConfig = require('./dbConfig.js');
+const cookieParser = require('cookie-parser');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const expressSession = require('express-session');
+const { port, enviorment } = require('./configs/serverConfig.js');
+const { dbName, dbUri } = require('./configs/dbConfig.js');
+const { secret } = require('./configs/securityConfig.js');
+const Account = require('./models/AccountModel.js');
 
 // const IP = process.env.ip;
-const PORT = process.env.PORT || serverConfig.port || 3000;
-const DB_NAME = process.env.DB_NAME || dbConfig.dbName || 'myappdatabase';
-const DBURI = process.env.DBURI || dbConfig.dbUri || `mongodb://localhost/${DB_NAME}`;
+const PORT = process.env.PORT || port || 3000;
+const DB_NAME = process.env.DB_NAME || dbName || 'myappdatabase';
+const DBURI = process.env.DBURI || dbUri || `mongodb://localhost/${DB_NAME}`;
+const ENVIORMENT = enviorment || 'development';
+
+
 
 function startServer(app) {
+  app.set('env', ENVIORMENT);
   app.use(express.static(path.join(__dirname, './../web/')));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(cookieParser());
+  app.use(expressSession({
+    secret,
+    resave: false,
+    saveUninitialized: false,
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+  passport.use(new LocalStrategy(Account.authenticate()));
+  passport.serializeUser(Account.serializeUser());
+  passport.deserializeUser(Account.deserializeUser());
+  if (app.get('env') === 'development') {
+    app.use((err, req, res, next) => {
+      res.status(err.status || 500);
+      res.send('error: ', {
+        message: err.message,
+        error: err,
+      });
+    });
+  }
+
+  // production error handler
+  // no stacktraces leaked to user
+  app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: {},
+    });
+  });
   app.use('/', router);
   app.listen(PORT, () => process.stdout.write(`Server listening on port ${PORT}\n`));
 }

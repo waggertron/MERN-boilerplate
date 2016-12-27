@@ -5,10 +5,10 @@ const LoginForm = (props) => {
   return (
     <div>
       <form action="#">
-        <label htmlFor="identifier">
-          Username/email:
+        <label htmlFor="email">
+          Email:
           <br />
-          <input name="identifier" type="text" onChange={props.handleType} />
+          <input name="email" type="text" onChange={props.handleType} />
         </label>
         <br />
         <label htmlFor="password">

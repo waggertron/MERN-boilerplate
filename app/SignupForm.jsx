@@ -2,27 +2,23 @@ import React from 'react';
 
 const SignupForm = (props) => {
   return (
-    <form action="#">
-      <label htmlFor="email">
-        Email* (optional)
+    <div id="signupFormDiv">
+      <form action="#">
+        <label htmlFor="email">
+          Email:
         <br />
-        <input name="email" type="email" onChange={props.handleType} />
+          <input name="email" type="email" onChange={props.handleType} />
+          <br />
+        </label>
+        <label htmlFor="password">
+          Password
         <br />
-      </label>
-      <label htmlFor="username">
-        Username
-      <br />
-        <input name="username" type="text" onChange={props.handleType} />
+          <input name="password" type="password" onChange={props.handleType} />
+        </label>
         <br />
-      </label>
-      <label htmlFor="password">
-        Password
-        <br />
-        <input name="password" type="password" onChange={props.handleType} />
-      </label>
-      <br />
-      <button type="button" className="submitBtn" onClick={props.handleSubmit}>Submit</button>
-    </form>
+        <button type="button" className="submitBtn" onClick={props.handleSubmit}>Submit</button>
+      </form>
+    </div>
   );
 };
 export default SignupForm;
