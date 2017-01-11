@@ -1,11 +1,5 @@
-/*
-*	Task Automation to make my life easier.
-*	Author: Jean-Pierre Sierens
-*	===========================================================================
-*/
 
-// declarations, dependencies
-// ----------------------------------------------------------------------------
+// dependencies
 const gulp = require('gulp');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
@@ -13,12 +7,14 @@ const gutil = require('gulp-util');
 const babelify = require('babelify');
 
 // External dependencies you do not want to rebundle while developing,
-// but include in your application deployment
+// but to include in deployment
 const dependencies = [
   'react',
   'react-dom',
+  'redux',
+  'react-redux',
 ];
-// keep a count of the times a task refires
+// count of task refires
 let scriptsCount = 0;
 
 // Gulp tasks
@@ -47,7 +43,7 @@ function bundleApp(isProduction) {
   // Browserify will bundle all our js files together in to one and will let
   // us use modules in the front end.
   const appBundler = browserify({
-    entries: './app/landing/main.js',
+    entries: './app/main.js',
     debug: true,
   });
 
@@ -75,7 +71,7 @@ function bundleApp(isProduction) {
   }
   appBundler
     // transform ES6 and JSX to ES5 with babelify
-    .transform('babelify', { presets: ['es2015', 'react'] })
+    .transform('babelify', { presets: ['es2015', 'react', 'stage-2'] })
     .bundle()
     .on('error', gutil.log)
     .pipe(source('bundle.js'))
